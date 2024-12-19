@@ -10,22 +10,22 @@ import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
 const routes = [
   {
-    href: "",
+    href: "dashboard",
     label: "Home",
     icon: HomeIcon,
   },
   {
-    href: "workflows",
+    href: "dashboard/workflows",
     label: "Workflows",
     icon: Layers2Icon,
   },
   {
-    href: "credentials",
+    href: "dashboard/credentials",
     label: "Credentials",
     icon: ShieldCheckIcon,
   },
   {
-    href: "billing",
+    href: "dashboard/billing",
     label: "Billing",
     icon: CoinsIcon,
   },
@@ -80,7 +80,7 @@ export function MobileSidebar() {
             </Button>
           </SheetTrigger>
           <SheetContent className="w-[400px] sm:w-[540px] space-y-4" side={"left"}>
-            <Logo/>
+            <Logo />
             <div className="flex flex-col p-2 gap-y-1">
               {routes.map((route) => (
                 <Link

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import React from "react";
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
+import AppProvider from "@/components/providers/AppProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   weight: ['400', '500', '600', '700'],
@@ -30,10 +32,11 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={`${inter.className} antialiased`}>
-          <ThemeProvider>
+          <AppProvider>
             {children}
-          </ThemeProvider>
+          </AppProvider>
         </body>
+        <Toaster richColors/>
       </html>
     </ClerkProvider>
   );
