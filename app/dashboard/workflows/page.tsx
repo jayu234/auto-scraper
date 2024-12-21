@@ -1,9 +1,10 @@
-import { getUserWorkflows } from "@/actions/workflows/getUserWorkflows";
+import { GetUserWorkflows } from "@/actions/workflows/getUserWorkflows";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, InboxIcon } from "lucide-react";
 import { Suspense } from "react";
 import { CreateWorkflowDialog } from "./_components/CreateWorkflowDialog";
+import WorkflowCard from "./_components/WorkflowCard";
 
 function page() {
   return (
@@ -36,7 +37,7 @@ function UserWorkflowsSkeleton() {
 
 
 async function UserWorkflows() {
-  const workflows = await getUserWorkflows();
+  const workflows = await GetUserWorkflows();
 
   if (!workflows) {
     return <Alert variant="destructive">
@@ -62,6 +63,14 @@ async function UserWorkflows() {
       </div>
     )
   }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {workflows.map((workflow, index) => (
+        <WorkflowCard key={index} {...workflow} />
+      ))}
+    </div>
+  )
 }
 
 export default page;
