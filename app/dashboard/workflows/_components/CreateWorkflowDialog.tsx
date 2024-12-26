@@ -33,6 +33,7 @@ export function CreateWorkflowDialog({ triggerButtonText }: {
   triggerButtonText?: string
 }) {
   const [open, setOpen] = useState<boolean>(false);
+
   const form = useForm<createWorkflowSchemaType>({
     resolver: zodResolver(createWorkflowSchema),
     defaultValues: {},
@@ -44,7 +45,7 @@ export function CreateWorkflowDialog({ triggerButtonText }: {
       toast.success('Workflow created', { id: 'create-workflow' });
     },
     onError: () => {
-      toast.error("Failed to create workflow", { id: 'create-workflow' });
+      toast.error("Something went wrong!", { id: 'create-workflow' });
     },
   });
 
@@ -74,7 +75,10 @@ export function CreateWorkflowDialog({ triggerButtonText }: {
         </DialogHeader>
         <div className="p-6">
           <Form {...form}>
-            <form className="w-full space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+            <form
+              className="w-full space-y-8"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
               <FormField
                 control={form.control}
                 name="name"

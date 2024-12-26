@@ -1,9 +1,16 @@
+import { auth } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
-function Page() {
+async function Page() {
+  const { userId } = await auth()
+  
+  if (!userId) {
+    redirect('/')
+  }
   return (
     <div>Dashboard page</div>
   )
 }
 
-export default Page
+export default Page;

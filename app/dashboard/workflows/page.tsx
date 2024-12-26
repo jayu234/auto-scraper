@@ -25,9 +25,9 @@ function page() {
 
 function UserWorkflowsSkeleton() {
   return (
-    <div className="space-y-2">
+    <div className="md:grid md:grid-cols-4 md:gap-x-2 md:space-y-0 space-y-2">
       {
-        [1, 2, 3, 4, 5].map((i) => (
+        [1, 2, 3, 4].map((i) => (
           <Skeleton key={i} className="h-32 w-full" />
         ))
       }
@@ -49,7 +49,7 @@ async function UserWorkflows() {
     </Alert>
   }
 
-  if (workflows.length === 0) {
+  if (!workflows.length) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-4">
         <div className="rounded-full bg-accent w-20 h-20 flex items-center justify-center">

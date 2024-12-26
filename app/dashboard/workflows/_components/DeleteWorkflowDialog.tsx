@@ -17,10 +17,11 @@ interface Props {
 function DeleteWorkflowDialog({ open, setOpen, workflowName, workflowId }: Props) {
   const [confirmText, setConfirmText] = useState<string>('');
 
-  const { mutate, isPending, reset } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: DeleteUserWorkflow,
     onSuccess: () => {
-      toast.success('Workflow deleted!', { id: `delete-workflow_${workflowId}` });
+      toast.success('Workflow deleted', { id: `delete-workflow_${workflowId}` });
+      setConfirmText('');
     },
     onError: () => {
       toast.error('Something went wrong!', { id: `delete-workflow_${workflowId}` });
@@ -31,7 +32,6 @@ function DeleteWorkflowDialog({ open, setOpen, workflowName, workflowId }: Props
   const handleDeleteWorkflow = () => {
     toast.loading('Deleting workflow...', { id: `delete-workflow_${workflowId}` });
     mutate({ id: workflowId });
-    reset();
   }
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -52,7 +52,7 @@ function DeleteWorkflowDialog({ open, setOpen, workflowName, workflowId }: Props
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={() => setConfirmText("")}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             disabled={confirmText !== workflowName || isPending}
             className={'bg-destructive text-destructive-foreground hover:bg-destructive/90'}

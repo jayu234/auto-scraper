@@ -10,22 +10,22 @@ import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
 const routes = [
   {
-    href: "dashboard",
+    href: "/dashboard",
     label: "Home",
     icon: HomeIcon,
   },
   {
-    href: "dashboard/workflows",
+    href: "/dashboard/workflows",
     label: "Workflows",
     icon: Layers2Icon,
   },
   {
-    href: "dashboard/credentials",
+    href: "/dashboard/credentials",
     label: "Credentials",
     icon: ShieldCheckIcon,
   },
   {
-    href: "dashboard/billing",
+    href: "/dashboard/billing",
     label: "Billing",
     icon: CoinsIcon,
   },
@@ -34,7 +34,7 @@ const routes = [
 export function DesktopSidebar() {
   const pathName = usePathname();
   const activeRoute = routes.find(
-    (route) => route.href.length > 0 && pathName.includes(route.href)
+    (route) => pathName === route.href
   ) || routes[0];
 
   return (
@@ -59,7 +59,7 @@ export function DesktopSidebar() {
           </Link>
         ))}
       </div>
-    </div >
+    </div>
   );
 };
 
@@ -67,25 +67,30 @@ export function MobileSidebar() {
   const [isOpen, setOpen] = useState(false);
   const pathName = usePathname();
   const activeRoute = routes.find(
-    (route) => route.href.length > 0 && pathName.includes(route.href)
+    (route) => pathName === route.href
   ) || routes[0];
+
+  const handleLinkClick = () => {
+    setOpen(false);
+  };
 
   return (
     <div className="block border-separate bg-background md:hidden">
       <nav className="flex items-center justify-between pr-2">
         <Sheet open={isOpen} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button variant={"ghost"} size={"icon"}>
+            <Button variant="ghost" size="icon">
               <MenuIcon />
             </Button>
           </SheetTrigger>
-          <SheetContent className="w-[400px] sm:w-[540px] space-y-4" side={"left"}>
+          <SheetContent className="w-[400px] sm:w-[540px] space-y-4" side="left">
             <Logo />
             <div className="flex flex-col p-2 gap-y-1">
               {routes.map((route) => (
                 <Link
                   key={route.href}
                   href={route.href}
+                  onClick={handleLinkClick}
                   className={buttonVariants({
                     variant:
                       activeRoute.href === route.href
@@ -100,7 +105,7 @@ export function MobileSidebar() {
             </div>
           </SheetContent>
         </Sheet>
-      </nav >
-    </div >
-  )
-};
+      </nav>
+    </div>
+  );
+}
