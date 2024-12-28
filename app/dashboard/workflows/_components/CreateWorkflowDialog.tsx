@@ -44,7 +44,11 @@ export function CreateWorkflowDialog({ triggerButtonText }: {
     onSuccess: () => {
       toast.success('Workflow created', { id: 'create-workflow' });
     },
-    onError: () => {
+    onError: (error) => {
+      if(error instanceof Error && error.message.includes('NEXT_REDIRECT')){
+        toast.success('Workflow created', { id: 'create-workflow' });
+        return;
+      }
       toast.error("Something went wrong!", { id: 'create-workflow' });
     },
   });
@@ -58,7 +62,12 @@ export function CreateWorkflowDialog({ triggerButtonText }: {
   )
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        form.reset();
+        setOpen(open);
+      }}>
       <DialogTrigger asChild>
         <Button>{triggerButtonText ?? 'Create workflow'}</Button>
       </DialogTrigger>
@@ -111,8 +120,8 @@ export function CreateWorkflowDialog({ triggerButtonText }: {
                       <Textarea {...field} className="resize-none" />
                     </FormControl>
                     <FormDescription>
-                      Provide a breif description of your workflow does.
-                      <br /> This is optional but can help you rember the workflow&apos;s purpose.
+                      Provide a brief description of your workflow does.
+                      <br /> This is optional but can help you remember the workflow&apos;s purpose.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
