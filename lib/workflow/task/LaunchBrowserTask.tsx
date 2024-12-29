@@ -1,4 +1,4 @@
-import { TaskInputTypes, TaskType } from "@/types/task";
+import { TaskParamTypes, TaskType } from "@/types/task";
 import { LucideProps, GlobeIcon } from "lucide-react";
 
 export const LaunchBrowserTask = {
@@ -11,10 +11,16 @@ export const LaunchBrowserTask = {
   inputs: [
     {
       name: "Website URL",
-      type: TaskInputTypes.STRING,
+      type: TaskParamTypes.STRING,
       helperText: "eg: https://example.com",
       required: true,
       hideHandle: true,
     }
-  ]
+  ],
+  outputs: [
+    {
+      name: "Web page",
+      type: TaskParamTypes.BROWSER_INSTANCE,
+    }
+  ],
 };

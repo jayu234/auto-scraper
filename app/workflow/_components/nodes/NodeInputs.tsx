@@ -1,7 +1,9 @@
 import { Handle, Position } from '@xyflow/react';
 import React, { ReactNode } from 'react'
 import NodeParamField from './NodeParamField';
-import { TaskInput } from '@/types/task';
+import { TaskParam } from '@/types/task';
+import { cn } from '@/lib/utils';
+import { ColorForHandle } from './common';
 
 export const NodeInputs = ({ children }: { children: ReactNode }) => {
   return (
@@ -9,16 +11,19 @@ export const NodeInputs = ({ children }: { children: ReactNode }) => {
   )
 };
 
-export const NodeInput = ({ param, nodeId }: {param: TaskInput, nodeId: string}) => {
+export const NodeInput = ({ input, nodeId }: { input: TaskParam, nodeId: string }) => {
   return (
     <div className='flex justify-start relative p-3 bg-secondary w-full'>
-      <NodeParamField param={param} nodeId={nodeId}/>
-      {!param.hideHandle && 
+      <NodeParamField param={input} nodeId={nodeId} />
+      {!input.hideHandle &&
         <Handle
-          id={param.name}
-          type='source'
+          id={input.name}
+          type='target'
           position={Position.Left}
-          className='!bg-muted-foreground !border-2 !border-background !-left-2 !w-4 !h-4'
+          className={cn(
+            '!bg-muted-foreground !border-2 !border-background !-left-2 !w-4 !h-4',
+            ColorForHandle[input.type]
+          )}
         />
       }
     </div>

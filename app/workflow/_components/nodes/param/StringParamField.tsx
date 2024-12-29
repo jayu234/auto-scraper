@@ -20,7 +20,7 @@ function StringParamField({ param, updateNodeParamValue, value }: ParamsProps) {
         value={internalValue}
         placeholder='Enter value here'
         onChange={(e) => setInternalValue(e.target.value)}
-        onBlur={(e) => updateNodeParamValue(e.target.value)}
+        onBlur={(e) => updateNodeParamValue && updateNodeParamValue(e.target.value)}
       />
       {param.helperText && <p className='text-muted-foreground px-2'> {param.helperText} </p>}
     </div>
