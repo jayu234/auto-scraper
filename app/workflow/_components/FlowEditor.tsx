@@ -3,12 +3,13 @@
 import { CreateFlowNode } from '@/lib/workflow/createFlowNode';
 import { TaskType } from '@/types/task';
 import { Workflow } from '@prisma/client'
-import { addEdge, Background, BackgroundVariant, Connection, Controls, Edge, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react'
+import { addEdge, Background, BackgroundVariant, Connection, Controls, Edge, getOutgoers, ReactFlow, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react'
 import '@xyflow/react/dist/style.css';
 import NodeComponent from './nodes/NodeComponent';
 import { useCallback, useEffect } from 'react';
 import { AppNode } from '@/types/appNode';
 import DeletableEdge from './edges/DeletableEdge';
+import { TaskRegistry } from '@/lib/workflow/task/registry';
 
 const nodeTypes = {
   Node: NodeComponent,
@@ -70,6 +71,49 @@ function FlowEditor({ workflow }: { workflow: Workflow }) {
     });
   }, [nodes, setEdges, updateNodeData]);
 
+  const isValidConnection = useCallback((connection: Edge | Connection) => {
+    // Cannot connect to the same node
+    if (connection.source === connection.target) return false;
+
+    console.log('Connection', connection);
+
+    // Cannot connect to different type of nodes
+    const sourceNode = nodes.find((node) => node.id === connection.source);
+    const targetNode = nodes.find((node) => node.id === connection.target);
+
+    console.log('Source Node:', sourceNode);
+    console.log('Target Node:', targetNode);
+    
+    if(!sourceNode || !targetNode){
+      console.log('Source or target node not found');
+      return false;
+    }
+
+    const sourceTask = TaskRegistry[sourceNode.data.type as TaskType];
+    const targetTask = TaskRegistry[targetNode.data.type as TaskType];
+
+    console.log('Source Task:', sourceTask);
+    console.log('Target Task:', targetTask);
+
+    const output = sourceTask.outputs.find((o) => o.name === connection.sourceHandle);
+    const input = targetTask.inputs.find((i) => i.name === connection.targetHandle);
+
+    if(output?.type !== input?.type) return false;
+
+    const hasCycle = (node: AppNode, visited = new Set()) => {
+      if (visited.has(node.id)) return false;
+
+      visited.add(node.id);
+
+      for (const outgoer of getOutgoers(node, nodes, edges)) {
+        if (outgoer.id === connection.source) return true;
+        if (hasCycle(outgoer, visited)) return true;
+      }
+    };
+
+    return !hasCycle(targetNode);
+  }, [edges, nodes]);
+
   return (
     <main className='h-full w-full'>
       <ReactFlow
@@ -88,6 +132,7 @@ function FlowEditor({ workflow }: { workflow: Workflow }) {
         onDragOver={(event) => onDragOver(event)}
         onDrop={(event) => onDrop(event)}
         onConnect={onConnect}
+        isValidConnection={isValidConnection}
       >
         <Controls fitViewOptions={fitViewOptions} />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
