@@ -21,7 +21,7 @@ function FlowEditor({ workflow }: { workflow: Workflow }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  const { setViewport, screenToFlowPosition } = useReactFlow();
+  const { setViewport, screenToFlowPosition, updateNodeData } = useReactFlow();
 
   useEffect(() => {
     try {
@@ -57,7 +57,18 @@ function FlowEditor({ workflow }: { workflow: Workflow }) {
 
   const onConnect = useCallback((connection: Connection) => {
     setEdges((edges) => addEdge({ ...connection, animated: true }, edges));
-  }, [setEdges]);
+
+    if(!connection.targetHandle) return;
+    const node = nodes.find((node) => node.id === connection.target);
+    if (!node) return;
+    const nodeInputs = node.data.inputs;
+    updateNodeData(node.id, {
+      inputs: {
+        ...nodeInputs,
+        [connection.targetHandle]: ""
+      }
+    });
+  }, [nodes, setEdges, updateNodeData]);
 
   return (
     <main className='h-full w-full'>
