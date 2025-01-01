@@ -27,31 +27,33 @@ function NodeHeader({ taskType, nodeId }: { taskType: TaskType, nodeId: string }
             {task.credits}
           </Badge>
           {!task.isEntryPoint && (
-              <>
-                <Button
-                  variant={'ghost'}
-                  onClick={() => deleteElements({
-                    nodes: [{ id: nodeId }],
-                  })}
-                >
-                  <TrashIcon size={12} />
-                </Button>
-                <Button
-                  variant={'ghost'}
-                  onClick={() => {
-                    const node = getNode(nodeId) as AppNode;
-                    if(!node) return;
-                    const newX = node?.position?.x + 50;
-                    const newY = node?.position?.y + 50;
+            <div className='ml-1'>
+              <Button
+                variant={'ghost'}
+                className='p-3'
+                onClick={() => {
+                  const node = getNode(nodeId) as AppNode;
+                  if (!node) return;
+                  const newX = node?.position?.x + 50;
+                  const newY = node?.position?.y + 50;
 
-                    const newNode = CreateFlowNode(node.data.type, { x: newX, y: newY });
-                    addNodes([newNode]);
-                  }}
-                >
-                  <CopyIcon size={12} />
-                </Button>
-              </>
-            )}
+                  const newNode = CreateFlowNode(node.data.type, { x: newX, y: newY });
+                  addNodes([newNode]);
+                }}
+              >
+                <CopyIcon size={12} />
+              </Button>
+              <Button
+                variant={'ghost'}
+                className='p-3'
+                onClick={() => deleteElements({
+                  nodes: [{ id: nodeId }],
+                })}
+              >
+                <TrashIcon size={12} />
+              </Button>
+            </div>
+          )}
           <Button variant={'ghost'} size={'icon'} className='drag-handle cursor-grab' >
             <GripVerticalIcon size={20} />
           </Button>

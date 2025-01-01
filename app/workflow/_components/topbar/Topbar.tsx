@@ -6,6 +6,7 @@ import { ChevronLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 import SaveBtn from './SaveBtn';
+import ExecuteBtn from './ExecuteBtn';
 
 interface Props {
   title: string;
@@ -28,7 +29,8 @@ function Topbar({ workflowId, title, subtitle }: Props) {
           {subtitle && <p className="text-xs text-muted-foreground truncate">{subtitle}</p>}
         </div>
       </div>
-      <div>
+      <div className='flex gap-2'>
+        <ExecuteBtn />
         <SaveBtn workflowId={workflowId}/>
       </div>
     </header>

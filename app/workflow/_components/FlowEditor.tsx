@@ -75,25 +75,16 @@ function FlowEditor({ workflow }: { workflow: Workflow }) {
     // Cannot connect to the same node
     if (connection.source === connection.target) return false;
 
-    console.log('Connection', connection);
-
     // Cannot connect to different type of nodes
     const sourceNode = nodes.find((node) => node.id === connection.source);
     const targetNode = nodes.find((node) => node.id === connection.target);
 
-    console.log('Source Node:', sourceNode);
-    console.log('Target Node:', targetNode);
-    
     if(!sourceNode || !targetNode){
-      console.log('Source or target node not found');
       return false;
     }
 
     const sourceTask = TaskRegistry[sourceNode.data.type as TaskType];
     const targetTask = TaskRegistry[targetNode.data.type as TaskType];
-
-    console.log('Source Task:', sourceTask);
-    console.log('Target Task:', targetTask);
 
     const output = sourceTask.outputs.find((o) => o.name === connection.sourceHandle);
     const input = targetTask.inputs.find((i) => i.name === connection.targetHandle);
