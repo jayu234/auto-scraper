@@ -30,7 +30,7 @@ function Topbar({ workflowId, title, subtitle }: Props) {
         </div>
       </div>
       <div className='flex gap-2'>
-        <ExecuteBtn />
+        <ExecuteBtn workflowId={workflowId}/>
         <SaveBtn workflowId={workflowId}/>
       </div>
     </header>

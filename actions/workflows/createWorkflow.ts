@@ -20,7 +20,7 @@ export async function CreateWorkflow (form: createWorkflowSchemaType) {
   const { userId } = await auth();
 
   if(!userId) {
-    throw new Error('Anauthenticated');
+    throw new Error('Unauthenticated');
   }
 
   const initialFlow: { nodes: AppNode[], edges: Edge[] } = {

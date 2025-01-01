@@ -3,7 +3,7 @@ import {
   WorkflowExecutionPlan,
   WorkflowExecutionPlanPhase,
 } from "@/types/workflow";
-import { Edge, getIncomers } from "@xyflow/react";
+import { Edge } from "@xyflow/react";
 import { TaskRegistry } from "./task/registry";
 
 export type FlowToExecutionPlanErrorType = {
@@ -144,3 +144,17 @@ function getInvalidInputs(node: AppNode, edges: Edge[], planned: Set<string>) {
   }
   return invalidInputs;
 }
+
+function getIncomers(node: AppNode, nodes: AppNode[], edges: Edge[]) {
+  if(!node) {
+    return [];
+  }
+  const incomerIds = new Set();
+  edges.forEach((edge) => {
+    if(edge.target === node.id) {
+      incomerIds.add(node.id);
+    };
+  });
+
+  return nodes.filter((n) => incomerIds.has(n.id));
+};
