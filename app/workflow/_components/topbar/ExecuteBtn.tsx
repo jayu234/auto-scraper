@@ -14,7 +14,7 @@ export default function ExecuteBtn({ workflowId }: { workflowId: string }) {
   const mutation = useMutation({
     mutationFn: RunWorkflow,
     onSuccess: () => {
-      toast.success('Workflow executed successfully', { id: 'workflow-execution' });
+      toast.success('Workflow execution started', { id: 'workflow-execution' });
     },
     onError: (error) => {
       toast.error(error.message, { id: 'workflow-execution' });
@@ -32,7 +32,6 @@ export default function ExecuteBtn({ workflowId }: { workflowId: string }) {
           return;
         }
 
-        toast.loading('Executing workflow...', { id: 'workflow-execution' });
         mutation.mutate({
           workflowId,
           flowDefinition: JSON.stringify(toObject()),

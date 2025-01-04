@@ -9,11 +9,11 @@ import { TaskRegistry } from "./task/registry";
 export type FlowToExecutionPlanErrorType = {
   type: FlowToExecutionPlanValidationError;
   invalidElements?: AppNodeMissingInputs[];
-}
+};
 
 export enum FlowToExecutionPlanValidationError {
-  'NO_ENTRY_POINT',
-  'INVALID_INPUTS',
+  "NO_ENTRY_POINT",
+  "INVALID_INPUTS",
 }
 
 type FlowToExecutionPlanType = {
@@ -25,22 +25,24 @@ export function FlowToExecutionPlan(
   nodes: AppNode[],
   edges: Edge[]
 ): FlowToExecutionPlanType {
-  const entryPoint = nodes.find((node) => TaskRegistry[node.data.type].isEntryPoint);
+  const entryPoint = nodes.find(
+    (node) => TaskRegistry[node.data.type].isEntryPoint
+  );
 
   // TODO: Handle Error when plan is invalid
   if (!entryPoint) {
     return {
       errors: {
         type: FlowToExecutionPlanValidationError.NO_ENTRY_POINT,
-      }
-    }
+      },
+    };
   }
 
   const inputsWithErrors: AppNodeMissingInputs[] = [];
   const planned = new Set<string>();
 
   const invalidInputs = getInvalidInputs(entryPoint, edges, planned);
-  if(invalidInputs.length > 0) {
+  if (invalidInputs.length > 0) {
     inputsWithErrors.push({
       nodeId: entryPoint.id,
       inputs: invalidInputs,
@@ -55,7 +57,7 @@ export function FlowToExecutionPlan(
   ];
 
   planned.add(entryPoint.id);
-  
+
   for (
     let phase = 2;
     phase <= nodes.length && planned.size < nodes.length;
@@ -89,13 +91,13 @@ export function FlowToExecutionPlan(
     executionPlan.push(nextPhase);
   }
 
-  if(inputsWithErrors.length > 0) {
+  if (inputsWithErrors.length > 0) {
     return {
       errors: {
         type: FlowToExecutionPlanValidationError.INVALID_INPUTS,
         invalidElements: inputsWithErrors,
-      }
-    }
+      },
+    };
   }
 
   return { executionPlan };
@@ -146,15 +148,15 @@ function getInvalidInputs(node: AppNode, edges: Edge[], planned: Set<string>) {
 }
 
 function getIncomers(node: AppNode, nodes: AppNode[], edges: Edge[]) {
-  if(!node) {
+  if (!node) {
     return [];
   }
   const incomerIds = new Set();
   edges.forEach((edge) => {
-    if(edge.target === node.id) {
-      incomerIds.add(node.id);
-    };
+    if (edge.target === node.id) {
+      incomerIds.add(edge.source);
+    }
   });
 
   return nodes.filter((n) => incomerIds.has(n.id));
-};
+}
