@@ -12,9 +12,10 @@ interface Props {
   title: string;
   subtitle?: string | null;
   workflowId: string;
+  hideButtons?: boolean;
 }
 
-function Topbar({ workflowId, title, subtitle }: Props) {
+function Topbar({ workflowId, title, subtitle, hideButtons = false }: Props) {
   const router = useRouter();
   return (
     <header className="flex p-2 border-b-2 border-separate justify-between w-full h-[60px] sticky top-0 bg-background z-10">
@@ -29,10 +30,12 @@ function Topbar({ workflowId, title, subtitle }: Props) {
           {subtitle && <p className="text-xs text-muted-foreground truncate">{subtitle}</p>}
         </div>
       </div>
-      <div className='flex gap-2'>
-        <ExecuteBtn workflowId={workflowId}/>
-        <SaveBtn workflowId={workflowId}/>
-      </div>
+      {!hideButtons && <>
+        <div className='flex gap-2'>
+          <ExecuteBtn workflowId={workflowId} />
+          <SaveBtn workflowId={workflowId} />
+        </div>
+      </>}
     </header>
   )
 }

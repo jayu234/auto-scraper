@@ -5,6 +5,7 @@ import { FlowToExecutionPlan } from "@/lib/workflow/executionPlan";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
 import { ExecutionPhaseStatus, WorkflowExecutionPlan, WorkflowExecutionStatus, WorkflowTrigger } from "@/types/workflow";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export async function RunWorkflow(form: {
   workflowId: string;
@@ -53,6 +54,7 @@ export async function RunWorkflow(form: {
       workflowId,
       userId,
       status: WorkflowExecutionStatus.PENDING,
+      startedAt: new Date(),
       trigger: WorkflowTrigger.MANUAL,
       phases: {
         create: executionPlan.flatMap((phase) => {
@@ -77,4 +79,6 @@ export async function RunWorkflow(form: {
   if(!execution) {
     throw new Error("Failed to create execution");
   }
+
+  redirect(`/workflow/runs/${workflowId}/${execution.id}`);
 }
