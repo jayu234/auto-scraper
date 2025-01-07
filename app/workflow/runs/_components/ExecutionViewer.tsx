@@ -22,11 +22,10 @@ export default function ExecutionViewer({ initialData }: { initialData: Executio
   const query = useQuery({
     queryKey: ["execution", initialData?.id],
     initialData,
-    queryFn: () => GetWorkflowExecutionWithPhases(initialData?.id),
+    queryFn: () => GetWorkflowExecutionWithPhases(initialData!.id),
     refetchInterval: (q) =>
-      q.state.data?.status === WorkflowExecutionStatus.PENDING ? 1000 : false,
+      q.state.data?.status === WorkflowExecutionStatus.RUNNING ? 1000 : false,
   });
-
   const isRunning = query.data?.status === WorkflowExecutionStatus.RUNNING;
 
   const phaseDetails = useQuery({

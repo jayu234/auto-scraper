@@ -1,4 +1,42 @@
-export async function ExtractTextFromElementExecutor() {
-  console.log('Running launch Extract Text From Element executor');
-  return true;
+import { ExecutionEnvironment } from "@/types/executor";
+import { ExtractTextFromElementTask } from "../task/ExtractTextFromElementTask";
+import * as cheerio from 'cheerio';
+
+export async function ExtractTextFromElementExecutor(
+  environment: ExecutionEnvironment<typeof ExtractTextFromElementTask>
+): Promise<boolean> {
+  try {
+    const selector = environment.getInput('Selector');
+    if(!selector) {
+      console.error('Selector not found');
+      return false;
+    }
+
+    const html = environment.getInput('HTML');
+    if(!html) {
+      console.error('HTML not found');
+      return false;
+    }
+
+    const $ = cheerio.load(html);
+    const element = $(selector);
+
+    if(!element) {
+      console.error('Element not found');
+      return false;
+    }
+
+    console.log('Element found', element);
+    const extractedText = $.text(element);
+    if(!extractedText){
+      console.error("Element has not text");
+      return false
+    }
+
+    environment.setOutput('Extracted text', extractedText);
+    return true;
+  } catch (error) {
+    console.error("Error running Extract Text From HTML executor", error);
+    return false;
+  }
 }
