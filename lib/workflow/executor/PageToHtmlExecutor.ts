@@ -6,10 +6,14 @@ export async function PageToHtmlExecutor(
 ): Promise<boolean> {
   try {
     const html = await environment.getPage()!.content();
+    if(!html) {
+      environment.log.error('HTML not found');
+      return false;
+    }
     environment.setOutput('HTML', html);
     return true;
-  } catch (error) {
-    console.error("Error running Page To HTML executor", error);
+  } catch (error: any) {
+    environment.log.error(error.message);
     return false;
   }
 }

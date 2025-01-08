@@ -16,6 +16,13 @@ export async function GetPhaseDetails(phaseId: string){
         userId,
       }
     },
+    include: {
+      logs: {
+        orderBy: {
+          timestamp: 'asc'
+        }
+      }
+    }
   });
 
   if(!phaseDetails) {

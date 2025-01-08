@@ -18,10 +18,8 @@ export async function LaunchBrowserExecutor(
 
     environment.setPage(page);
     return true;
-  } catch (error) {
-    console.error("Error running Launch Browser executor", error);
+  } catch (error: any) {
+    environment.log.error(error?.message);
     return false;
-  } finally {
-    
   }
 }
