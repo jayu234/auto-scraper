@@ -74,7 +74,12 @@ export default function ExecutionViewer({ initialData }: { initialData: Executio
           <ExecutionLabel
             icon={CircleDashedIcon}
             label="Status"
-            value={query.data?.status}
+            value={<>
+              <div className='flex justify-between gap-1'>
+                <PhaseStatusBadge status={query.data?.status as ExecutionPhaseStatus} />
+                <span>{query.data?.status}</span>
+              </div>
+            </>}
           />
           {/* Started at label */}
           <ExecutionLabel

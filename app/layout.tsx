@@ -5,6 +5,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
 import AppProvider from "@/components/providers/AppProvider";
 import { Toaster } from "@/components/ui/sonner";
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({
   weight: ['400', '500', '600', '700'],
@@ -32,6 +33,7 @@ export default function RootLayout({
     >
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.className} antialiased`}>
+          <NextTopLoader color="#10b981" showSpinner={false} />
           <AppProvider>
             {children}
           </AppProvider>
