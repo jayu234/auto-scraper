@@ -7,7 +7,6 @@ import {
 } from "@/types/workflow";
 import { revalidatePath } from "next/cache";
 import { ExecutionPhase, Prisma } from "@prisma/client";
-import wait from "../wait";
 import { TaskRegistry } from "./task/registry";
 import { AppNode } from "@/types/appNode";
 import { ExecutorRegistry } from "./executor/registry";
@@ -53,7 +52,13 @@ export async function ExecuteWorkflow(executionId: string) {
   let creditsConsumed = 0;
 
   for (const phase of execution.phases) {
-    const phaseExecution = await executeWorkflowPhase(phase, environment, edges);
+    const phaseExecution = await executeWorkflowPhase(
+      phase,
+      environment,
+      edges,
+      execution.userId
+    );
+    creditsConsumed += phaseExecution.creditsConsumed;
     if (!phaseExecution) {
       executionFailed = true;
       break;
@@ -151,7 +156,8 @@ async function finalizeWorkflowExecution(
 async function executeWorkflowPhase(
   phase: ExecutionPhase,
   environment: Environment,
-  edges: Edge[]
+  edges: Edge[],
+  userId: string
 ) {
   const logCollector = createLogCollector();
   const startedAt = new Date();
@@ -169,20 +175,27 @@ async function executeWorkflowPhase(
   });
 
   const creditsRequired = TaskRegistry[node.data.type].credits;
-  console.log("Credits required for phase : ", phase.id, creditsRequired);
 
-  // Update user balance
+  let success = await decrementCredits(userId, creditsRequired, logCollector);
+  const creditsConsumed = success ? creditsRequired : 0;
 
-  await wait(2000);
+  if(success) {
+    success = await executePhase(phase, node, environment, logCollector);
+  }
 
-  const success = await executePhase(phase, node, environment, logCollector);
   const outputs = environment.phases[node.id].outputs;
-  await finalizePhase(phase.id, success, outputs, logCollector);
+  await finalizePhase(phase.id, success, outputs, logCollector, creditsConsumed);
 
-  return { success };
+  return { success, creditsConsumed };
 }
 
-async function finalizePhase(phaseId: string, success: boolean, outputs: any, logCollector: LogCollector) {
+async function finalizePhase(
+  phaseId: string,
+  success: boolean,
+  outputs: any,
+  logCollector: LogCollector,
+  creditsConsumed: number
+) {
   const finalStatus = success
     ? ExecutionPhaseStatus.COMPLETED
     : ExecutionPhaseStatus.FAILED;
@@ -193,15 +206,16 @@ async function finalizePhase(phaseId: string, success: boolean, outputs: any, lo
       status: finalStatus,
       completedAt: new Date(),
       outputs: JSON.stringify(outputs),
+      creditsConsumed,
       logs: {
         createMany: {
           data: logCollector.getAll().map((log) => ({
             message: log.message,
             logLevel: log.level,
             timestamp: log.timesamp,
-          }))
-        }
-      }
+          })),
+        },
+      },
     },
   });
 }
@@ -217,11 +231,19 @@ async function executePhase(
     return false;
   }
 
-  const executionEnvironment = createExecutionEnvironment(node, environment, logCollector);
+  const executionEnvironment = createExecutionEnvironment(
+    node,
+    environment,
+    logCollector
+  );
   return await runFn(executionEnvironment);
 }
 
-function setUpPhasesForEnvironment(node: AppNode, environment: Environment, edges: Edge[]) {
+function setUpPhasesForEnvironment(
+  node: AppNode,
+  environment: Environment,
+  edges: Edge[]
+) {
   environment.phases[node.id] = { inputs: {}, outputs: {} };
   const inputs = TaskRegistry[node.data.type].inputs;
 
@@ -238,12 +260,20 @@ function setUpPhasesForEnvironment(node: AppNode, environment: Environment, edge
       (edge) => edge.target === node.id && edge.targetHandle === input.name
     );
 
-    if(!connectedEdge) {
-      console.log('Missing connected edge for input ', input.name, ' in node ', node.id);
+    if (!connectedEdge) {
+      console.log(
+        "Missing connected edge for input ",
+        input.name,
+        " in node ",
+        node.id
+      );
       continue;
     }
 
-    const outputValue = environment.phases[connectedEdge.source].outputs[connectedEdge.sourceHandle!];
+    const outputValue =
+      environment.phases[connectedEdge.source].outputs[
+        connectedEdge.sourceHandle!
+      ];
     environment.phases[node.id].inputs[input.name] = outputValue;
   }
 }
@@ -256,13 +286,13 @@ function createExecutionEnvironment(
   return {
     getInput: (key: string) => environment.phases[node.id]?.inputs[key],
     setOutput: (key: string, value: string) => {
-      environment.phases[node.id].outputs[key] = value
+      environment.phases[node.id].outputs[key] = value;
     },
     getBrowser: () => environment.browser,
     setBrowser: (browser: Browser) => (environment.browser = browser),
     getPage: () => environment.page,
     setPage: (page: Page) => (environment.page = page),
-    log: logCollector
+    log: logCollector,
   };
 }
 
@@ -271,5 +301,23 @@ async function cleanupEnvironment(environment: Environment) {
     await environment.browser
       .close()
       .catch((error) => console.error("Error closing browser: ", error));
+  }
+}
+
+async function decrementCredits(
+  userId: string,
+  amount: number,
+  logCollector: LogCollector
+) {
+  try {
+    await prisma.userBalance.update({
+      where: { userId, credits: { gte: amount } },
+      data: { credits: { decrement: amount } },
+    });
+    return true;
+  } catch (error: any) {
+    console.error(error?.message);
+    logCollector.error("Insufficient balance");
+    return false;
   }
 }

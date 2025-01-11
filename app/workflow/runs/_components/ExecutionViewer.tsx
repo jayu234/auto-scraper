@@ -19,6 +19,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { CalendarIcon, CircleDashedIcon, ClockIcon, CoinsIcon, Loader2Icon, LucideIcon, WorkflowIcon } from 'lucide-react';
 import React, { ReactNode, useEffect, useState } from 'react'
 import PhaseStatusBadge from './PhaseStatusButton';
+import ReactCountUpWrapper from '@/components/ReactCountUpWrapper';
 
 type ExecutionDataType = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>;
 
@@ -33,6 +34,7 @@ export default function ExecutionViewer({ initialData }: { initialData: Executio
     refetchInterval: (q) =>
       q.state.data?.status === WorkflowExecutionStatus.RUNNING ? 1000 : false,
   });
+
   const isRunning = query.data?.status === WorkflowExecutionStatus.RUNNING;
 
   useEffect(() => {
@@ -98,7 +100,7 @@ export default function ExecutionViewer({ initialData }: { initialData: Executio
           <ExecutionLabel
             icon={CoinsIcon}
             label="Credits consumed"
-            value={creditsConsumed}
+            value={<ReactCountUpWrapper value={creditsConsumed} />}
           />
         </div>
         <Separator />
@@ -153,7 +155,7 @@ export default function ExecutionViewer({ initialData }: { initialData: Executio
                   <CoinsIcon size={18} className="stroke-muted-foreground" />
                   <span>Credits</span>
                 </div>
-                <span>TODO</span>
+                <span>{phaseDetails.data.creditsConsumed}</span>
               </Badge>
               <Badge variant={"outline"} className="space-x-4">
                 <div className="flex gap-1 items-center">
