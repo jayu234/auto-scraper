@@ -25,10 +25,10 @@ function page() {
 
 function UserWorkflowsSkeleton() {
   return (
-    <div className="md:grid md:grid-cols-4 md:gap-x-2 md:space-y-0 space-y-2">
+    <div className="grid grid-cols-1 gap-4">
       {
-        [1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-32 w-full" />
+        [1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-[100px] w-full" />
         ))
       }
     </div>
@@ -65,7 +65,7 @@ async function UserWorkflows() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4">
       {workflows.map((workflow, index) => (
         <WorkflowCard key={index} {...workflow} />
       ))}

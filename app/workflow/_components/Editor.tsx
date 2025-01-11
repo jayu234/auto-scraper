@@ -5,6 +5,7 @@ import FlowEditor from './FlowEditor';
 import Topbar from './topbar/Topbar';
 import TaskMenu from './TaskMenu';
 import { FlowVlidationContextProvider } from '@/components/context/FlowValidationContext';
+import { WorkflowStatus } from '@/types/workflow';
 
 interface Props {
   workflow: Workflow;
@@ -19,6 +20,7 @@ function Editor({ workflow }: Props) {
             title={'Workflow Editor'}
             subtitle={workflow.name}
             workflowId={workflow.id}
+            isPublished={workflow.status === WorkflowStatus.PUBLISHED}
           />
           <section className='flex h-full overflow-auto'>
             <TaskMenu />
