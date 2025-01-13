@@ -15,7 +15,7 @@ interface TooltipProps {
 
 function TooltipWrapper(props: TooltipProps) {
   return (
-    <TooltipProvider delayDuration={0}>
+    <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{props.children}</TooltipTrigger>
         <TooltipContent side={props.side}>{props.content}</TooltipContent>
