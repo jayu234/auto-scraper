@@ -23,6 +23,7 @@ import { Badge } from '@/components/ui/badge';
 import { format, formatDistanceToNow } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz'
 import ExecutionStatusIndicator, { ExecutionStatusLabel } from '@/app/workflow/runs/[workflowId]/_components/ExecutionStatusIndicator';
+import { DuplicateWorkflowDialog } from './DuplicateWorkflowDialog';
 
 const statusColors = {
   [WorkflowStatus.DRAFT]: 'bg-yellow-400 text-yellow-600',
@@ -33,7 +34,7 @@ function WorkflowCard(workflow: Workflow) {
   const isDraft = workflow.status === WorkflowStatus.DRAFT;
 
   return (
-    <Card className="w-full border border-separate shadow-sm rounded-lg overflow-hidden hover:shadow-md dark:shadow-primary/30">
+    <Card className="w-full border border-separate shadow-sm rounded-lg overflow-hidden hover:shadow-md dark:shadow-primary/30 group/card">
       <CardContent className='p-4 flex justify-between items-center h-[100px]'>
         <div className='flex items-center justify-end space-x-3'>
           <div
@@ -50,12 +51,14 @@ function WorkflowCard(workflow: Workflow) {
           </div>
           <div>
             <h3 className='text-base font-bold text-muted-foreground flex items-center'>
-              <Link
-                href={`/workflow/editor/${workflow.id}`}
-                className='flex items-center hover:underline'
-              >
-                {workflow.name}
-              </Link>
+              <TooltipWrapper content={workflow.description} contentClassName='bg-white text-black'>
+                <Link
+                  href={`/workflow/editor/${workflow.id}`}
+                  className='flex items-center hover:underline'
+                >
+                  {workflow.name}
+                </Link>
+              </TooltipWrapper>
               {
                 isDraft && (
                   <span className='text-xs ml-2 bg-yellow-100 text-yellow-600 rounded-full px-2'>
@@ -63,6 +66,7 @@ function WorkflowCard(workflow: Workflow) {
                   </span>
                 )
               }
+              <DuplicateWorkflowDialog workflowId={workflow.id} />
             </h3>
             <SchedulerSection isDraft={isDraft} creditsCost={workflow.creditsCost} cron={workflow.cron} workflowId={workflow.id} />
           </div>
@@ -131,7 +135,7 @@ function SchedulerSection({
   isDraft: boolean, creditsCost: number, cron: string | null, workflowId: string
 }) {
   if (isDraft) return null;
-  
+
   return (
     <div className='flex items-center gap-2'>
       <CornerDownRightIcon size={16} className='h-4 w-4 text-muted-foreground' />
@@ -152,7 +156,7 @@ function SchedulerSection({
 }
 
 function LastRunDetails({ workflow, isDraft }: { workflow: Workflow, isDraft: boolean }) {
-  if(isDraft) return null;
+  if (isDraft) return null;
   const { lastRunAt, lastRunStatus, lastRunId, nextRunAt } = workflow;
   const formattedStartedAt =
     lastRunAt && formatDistanceToNow(lastRunAt, { addSuffix: true });

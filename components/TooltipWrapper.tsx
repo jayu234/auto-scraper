@@ -8,12 +8,13 @@ import {
 
 interface TooltipProps {
   children: React.ReactNode;
-  content: string;
+  content: string | null;
   side?: 'top' | 'bottom' | 'left' | 'right';
   contentClassName?: string;
 }
 
 function TooltipWrapper(props: TooltipProps) {
+  if(!props.content) return props.children;
   return (
     <TooltipProvider>
       <Tooltip>
