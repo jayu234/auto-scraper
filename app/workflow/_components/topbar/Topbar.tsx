@@ -43,8 +43,8 @@ function Topbar({ workflowId, title, subtitle, hideButtons = false, isPublished 
             <ExecuteBtn workflowId={workflowId} />
             {isPublished ? <UnpublishBtn workflowId={workflowId} /> :
               <>
-                <PublishBtn workflowId={workflowId} />
                 <SaveBtn workflowId={workflowId} />
+                <PublishBtn workflowId={workflowId} />
               </>
             }
           </div>

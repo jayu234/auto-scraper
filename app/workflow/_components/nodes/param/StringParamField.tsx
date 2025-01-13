@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Input } from '@/components/ui/input';
@@ -27,7 +26,7 @@ function StringParamField({ param, updateNodeParamValue, value, disabled }: Para
       <Component
         id={id}
         disabled={disabled}
-        className='text-xs bg-white'
+        className='text-xs bg-white dark:bg-black dark:text-white'
         value={internalValue}
         placeholder='Enter value here'
         onChange={(e: any) => setInternalValue(e.target.value)}

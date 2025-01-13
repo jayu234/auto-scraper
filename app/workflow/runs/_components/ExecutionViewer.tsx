@@ -55,7 +55,8 @@ export default function ExecutionViewer({ initialData }: { initialData: Executio
   }, [isRunning, query.data?.phases, setSelectedPhase]);
 
   const phaseDetails = useQuery({
-    queryKey: ["phaseDetails", selectedPhase],
+    // 'query.data.status' to fetch data when the phase execution finished
+    queryKey: ["phaseDetails", selectedPhase, query.data.status],
     enabled: !!selectedPhase,
     queryFn: () => GetPhaseDetails(selectedPhase!),
   });

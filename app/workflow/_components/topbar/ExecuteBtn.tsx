@@ -17,6 +17,10 @@ export default function ExecuteBtn({ workflowId }: { workflowId: string }) {
       toast.success('Workflow execution started', { id: 'workflow-execution' });
     },
     onError: (error) => {
+      if(error instanceof Error && error.message.includes('NEXT_REDIRECT')){
+        toast.success('Workflow execution started', { id: 'workflow-execution' });
+        return;
+      }
       toast.error(error.message, { id: 'workflow-execution' });
     }
   });
@@ -33,6 +37,7 @@ export default function ExecuteBtn({ workflowId }: { workflowId: string }) {
           return;
         }
 
+        toast.loading('Starting workflow execution', { id: 'workflow-execution' });
         mutation.mutate({
           workflowId,
           flowDefinition: JSON.stringify(toObject()),
