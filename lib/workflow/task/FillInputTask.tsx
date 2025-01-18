@@ -18,7 +18,6 @@ export const FillInputTask = {
       name: "Selector",
       type: TaskParamTypes.STRING,
       required: true,
-      hideHandle: true,
     },
     {
       name: "Value",

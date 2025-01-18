@@ -1,9 +1,11 @@
 'use client';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button'
 import { TaskRegistry } from '@/lib/workflow/task/registry'
 import { TaskType } from '@/types/task'
+import { CoinsIcon } from 'lucide-react';
 import React from 'react'
 
 export default function TaskMenu() {
@@ -12,7 +14,7 @@ export default function TaskMenu() {
       <Accordion
         type="multiple"
         className="w-full"
-        defaultValue={['extraction', 'interaction', 'timing', 'results']}
+        defaultValue={['extraction', 'interaction', 'timing', 'results', 'storage']}
       >
         <AccordionItem value="extraction">
           <AccordionTrigger className="font-bold">
@@ -21,6 +23,16 @@ export default function TaskMenu() {
           <AccordionContent className="flex flex-col gap-1">
             <TaskMenuBtn taskType={TaskType.PAGE_TO_HTML} />
             <TaskMenuBtn taskType={TaskType.EXTRACT_TEXT_FROM_ELEMENT} />
+            <TaskMenuBtn taskType={TaskType.EXTRACT_TEXT_WITH_AI} />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="storage">
+          <AccordionTrigger className="font-bold">
+            Data storage
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuBtn taskType={TaskType.READ_PROPERTY_FROM_JSON} />
+            <TaskMenuBtn taskType={TaskType.ADD_PROPERTY_TO_JSON} />
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="interaction">
@@ -28,8 +40,10 @@ export default function TaskMenu() {
             User interaction
           </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuBtn taskType={TaskType.NAVIGATE_URL} />
             <TaskMenuBtn taskType={TaskType.FILL_INPUT} />
             <TaskMenuBtn taskType={TaskType.CLICK_ELEMENT} />
+            <TaskMenuBtn taskType={TaskType.SCROLL_TO_ELEMENT} />
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="timing">
@@ -60,7 +74,7 @@ function TaskMenuBtn({ taskType }: { taskType: TaskType }) {
     event.dataTransfer.setData('application/reactflow', type);
     event.dataTransfer.effectAllowed = 'move';
   };
-  
+
   return (
     <Button
       variant={'secondary'}
@@ -72,6 +86,10 @@ function TaskMenuBtn({ taskType }: { taskType: TaskType }) {
         <task.icon size={20}/>
         <p>{task.label}</p>
       </div>
+      <Badge className='flex items-center justify-center' variant={'outline'}>
+        <CoinsIcon size={16} />
+        {task.credits}
+      </Badge>
     </Button>
   )
 }

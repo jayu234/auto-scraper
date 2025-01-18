@@ -1,11 +1,11 @@
 import { TaskParamTypes, TaskType } from "@/types/task";
 import { WorkflowTaskType } from "@/types/workflow";
-import { MousePointerClickIcon } from "lucide-react";
+import { LinkIcon } from "lucide-react";
 
-export const ClickElementTask = {
-  type: TaskType.CLICK_ELEMENT,
-  label: "Click Element",
-  icon: (props) => <MousePointerClickIcon className="stroke-orange-400" {...props} />,
+export const NavigateUrlTask = {
+  type: TaskType.NAVIGATE_URL,
+  label: "Navigate to URL",
+  icon: (props) => <LinkIcon className="stroke-orange-400" {...props} />,
   isEntryPoint: false,
   credits: 1,
   inputs: [
@@ -15,7 +15,7 @@ export const ClickElementTask = {
       required: true,
     },
     {
-      name: "Selector",
+      name: "URL",
       type: TaskParamTypes.STRING,
       required: true,
     },

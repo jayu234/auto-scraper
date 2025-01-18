@@ -12,10 +12,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
-import { OptionType } from '@/types/task';
+import { useQuery } from '@tanstack/react-query';
+import { GetCredentialsForUser } from '@/actions/credentials/getCredentialsForUser';
 
-export default function SelectParam({ param, updateNodeParamValue, value }: ParamsProps) {
+export default function CredentialParam({ param, updateNodeParamValue, value }: ParamsProps) {
   const id = useId();
+  const query = useQuery({
+    queryKey: ['credentials-for-user'],
+    queryFn: GetCredentialsForUser,
+    refetchInterval: 10000,
+  });
 
   return (
     <div className='flex flex-col gap-1 w-full'>
@@ -28,14 +34,14 @@ export default function SelectParam({ param, updateNodeParamValue, value }: Para
         onValueChange={(value) => (updateNodeParamValue(value))}
       >
         <SelectTrigger className='text-xs bg-white dark:bg-black dark:text-white'>
-          <SelectValue placeholder="Select an option"/>
+          <SelectValue placeholder="Select an option" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Options</SelectLabel>
-            {param.options?.map((option: OptionType) =>
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+            <SelectLabel>Credentials</SelectLabel>
+            {query.data?.map((item) =>
+              <SelectItem key={item.id} value={item.name}>
+                {item.name}
               </SelectItem>
             )}
           </SelectGroup>

@@ -6,12 +6,18 @@ export enum TaskType {
   CLICK_ELEMENT = 'CLICK_ELEMENT',
   WAIT_FOR_ELEMENT = 'WAIT_FOR_ELEMENT',
   DELIVER_VIA_WEBHOOK = 'DELIVER_VIA_WEBHOOK',
+  EXTRACT_TEXT_WITH_AI = 'EXTRACT_TEXT_WITH_AI',
+  READ_PROPERTY_FROM_JSON = 'READ_PROPERTY_FROM_JSON',
+  ADD_PROPERTY_TO_JSON = 'ADD_PROPERTY_TO_JSON',
+  NAVIGATE_URL = 'NAVIGATE_URL',
+  SCROLL_TO_ELEMENT = 'SCROLL_TO_ELEMENT',
 }
 
 export enum TaskParamTypes {
   STRING = 'STRING',
   BROWSER_INSTANCE = 'BROWSER_INSTANCE',
   SELECT = 'SELECT',
+  CREDENTIAL = 'CREDENTIAL',
 }
 
 export type OptionType = {
@@ -24,6 +30,5 @@ export interface TaskParam {
   helperText?: string;
   required?: boolean;
   hideHandle?: boolean;
-  options?: OptionType[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
