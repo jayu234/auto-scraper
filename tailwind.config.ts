@@ -97,27 +97,26 @@ export default {
   					opacity: '1',
   					transform: 'translateY(0)'
   				},
-  				'appear-zoom': {
-  					'0%': {
-  						opacity: '0',
-  						transform: 'scale(0.95)'
-  					},
-  					'100%': {
-  						opacity: '1',
-  						transform: 'scale(1)'
-  					}
-  				},
-  				animation: {
-  					appear: 'appear 0.5s ease-out forwards',
-  					'appear-zoom': 'appear-zoom 0.5s ease-out forwards'
-  				}
-  			}
-  		},
-  		animation: {
-  			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
-  	}
+			},
+			'appear-zoom': {
+				'0%': {
+					opacity: '0',
+					transform: 'scale(0.95)'
+				},
+				'100%': {
+					opacity: '1',
+					transform: 'scale(1)'
+				}
+			}
+		},
+		animation: {
+			appear: 'appear 0.5s ease-out forwards',
+			'appear-zoom': 'appear-zoom 0.5s ease-out forwards',
+			'accordion-down': 'accordion-down 0.2s ease-out',
+			'accordion-up': 'accordion-up 0.2s ease-out'
+		}
+	}
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
