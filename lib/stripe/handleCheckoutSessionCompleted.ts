@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { getCreditsPack, PackId } from "@/types/billing";
 import Stripe from "stripe";
 import prisma from "../prisma";
