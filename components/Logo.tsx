@@ -4,7 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 
 function Logo({
-  fontSize = "text-2x1",
+  fontSize = "text-2xl",
   iconSize = 20,
 }: {
   fontSize?: string;

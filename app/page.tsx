@@ -1,11 +1,12 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Bot, Code2, Globe, Languages, MessageSquare, Settings2, Star, Zap } from 'lucide-react'
+import { Code2, Globe, Languages, MessageSquare, Settings2, Star, Zap } from 'lucide-react'
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { DotPattern } from "@/components/ui/dot-pattern"
 import { cn } from "@/lib/utils"
+import Logo from "@/components/Logo"
 
 export default async function Page() {
   const { userId } = await auth();
@@ -19,10 +20,7 @@ export default async function Page() {
       {/* Sticky Header */}
       <header className="fixed w-full bg-background/80 backdrop-blur-sm z-50 border-b">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Bot className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">AutoScraper</span>
-          </div>
+          <Logo fontSize="text-xl"/>
           <div className="hidden sm:flex items-center space-x-4 md:gap-1">
             <Link href="/sign-in">
               <Button variant="outline">
